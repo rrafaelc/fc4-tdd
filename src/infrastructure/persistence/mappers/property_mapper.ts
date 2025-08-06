@@ -3,6 +3,17 @@ import { PropertyEntity } from "../entities/property_entity";
 
 export class PropertyMapper {
   static toDomain(entity: PropertyEntity): Property {
+    if (
+      !entity.id ||
+      !entity.name ||
+      !entity.description ||
+      !entity.maxGuests ||
+      !entity.basePricePerNight
+    )
+      throw new Error(
+        "Campo id, name, description, maxGuest e basePricePerNight são obrigatórios"
+      );
+
     return new Property(
       entity.id,
       entity.name,
