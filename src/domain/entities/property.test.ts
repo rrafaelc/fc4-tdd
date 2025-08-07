@@ -26,6 +26,16 @@ describe("Property Entity", () => {
     }).toThrow("O nome é obrigatório");
   });
 
+  it("deve lançar um erro se o número de preço base por noite for zero ou negativo", () => {
+    expect(() => {
+      new Property("1", "Casa", "Descrição", 4, 0);
+    }).toThrow("O número do preço base por noite deve ser maior que zero");
+
+    expect(() => {
+      new Property("1", "Casa", "Descrição", 4, -1);
+    }).toThrow("O número do preço base por noite deve ser maior que zero");
+  });
+
   it("deve lançar um erro se o número máximo de hospedes for zero ou negativo", () => {
     expect(() => {
       new Property("1", "Casa", "Descrição", 0, 200);
