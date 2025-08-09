@@ -192,4 +192,40 @@ describe("BookingService", () => {
       "Reserva não encontrada."
     );
   });
+
+  it("deve retornar erro ao tentar cancelar uma reserva que não existe", async () => {
+    const mockProperty = {
+      getId: jest.fn().mockReturnValue("1"),
+      isAvailable: jest.fn().mockReturnValue(true),
+      validateGuestCount: jest.fn(),
+      calculateTotalPrice: jest.fn().mockReturnValue(500),
+      addBooking: jest.fn(),
+    } as any;
+
+    const mockUser = {
+      getId: jest.fn().mockReturnValue("1"),
+    } as any;
+
+    mockPropertyService.findPropertyById.mockResolvedValue(mockProperty);
+    mockUserService.findUserById.mockResolvedValue(mockUser);
+
+    const bookingDTO: CreateBookingDTO = {
+      propertyId: "1",
+      guestId: "1",
+      startDate: new Date("2024-12-20"),
+      endDate: new Date("2024-12-25"),
+      guestCount: 2,
+    };
+
+    const existingBooking = await bookingService.createBooking(bookingDTO);
+    const foundExistingBooking = await fakeBookingRepository.findById(
+      existingBooking.getId()
+    );
+    expect(foundExistingBooking).not.toBeNull();
+
+    const bookingId = "invalido-56be-46f4-a813-bd2e2c97c87f";
+    await expect(bookingService.cancelBooking(bookingId)).rejects.toThrow(
+      "Reserva não encontrada."
+    );
+  });
 });
